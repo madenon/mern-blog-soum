@@ -1,25 +1,31 @@
-import User from "../models/user.model.js"
-import bcryptjs from "bcryptjs" 
+import User from "../models/user.model.js";
+import bcryptjs from "bcryptjs";
+import { errorHandler } from "../utils/error.js";
 
-export const signup = async(req, res) =>{
-    const {username, email, password} = req.body
+export const signup = async (req, res, next) => {
+  const { username, email, password } = req.body;
 
-    if(!username || !email || !password || username==='' || email=='' || password===''){
-        return res.status(400).json({message:"Tout les champs sont requis"})
-    }
-    const newName= username.trim()
-    const newEmail = email.trim()
-const hashPassword = bcryptjs.hashSync(password, 10)
-    const newUser = new User({
-        username:newName, 
-        email:newEmail, 
-        password:hashPassword
-    });
-    try {
-        await newUser.save();
-         res.status(200).json({newUser})
-    } catch (error) {
-         res.status(500).json({message:error.message})
-    }
-   
-}
+  if (
+    !username ||
+    !email ||
+    !password ||
+    username === "" ||
+    email == "" ||
+    password === ""
+  ) {
+    next(errorHandler(400, "Tout les champs sont requis"));
+  }
+  
+  const hashPassword = bcryptjs.hashSync(password, 10);
+  const newUser = new User({
+    username,
+    email,
+    password: hashPassword,
+  });
+  try {
+    await newUser.save();
+    res.status(200).json({ newUser });
+  } catch (error) {
+    next(errorHandler(400, "Error"));
+  }
+};

@@ -19,6 +19,15 @@ app.use(cors())
 app.use("/api/user", userRoutes)
 app.use("/api/auth", authRoute)
 
+app.use((err, req, res, next)=>{
+    const statusCode = err.statusCode || 500;
+    const message = err.message || "Erreur du server";
+    res.status(statusCode).json({
+         success:false,
+         statusCode,
+         message
+    })
+})
 app.listen(PORT, ()=>{
     console.log(`Server bien demarré http://localhost:${PORT}`)
 })
