@@ -13,7 +13,7 @@ export const signup = async (req, res, next) => {
     email === "" ||
     password === ""
   ) {
-    return next(errorHandler(400, "Tout les champs sont requis"));
+     next(errorHandler(400, "Tout les champs sont requis"));
    
   }
   if(password.length < 8){
@@ -31,7 +31,7 @@ export const signup = async (req, res, next) => {
     await newUser.save();
     res.status(200).json({ newUser });
   } catch (error) {
-    next(errorHandler(400, "Error"));
+    next(error);
   }
 };
 
@@ -39,7 +39,7 @@ export const signup = async (req, res, next) => {
 export const signin = async(req, res, next)=>{
   const {email, password} = req.body
   if(!email || !password || email==="" ||password===""){
-    return  next(errorHandler(400, "Les champs sont obligatoire pour se connecter"));
+      next(errorHandler(400, "Les champs sont obligatoire pour se connecter"));
 
   }
 
@@ -63,7 +63,7 @@ export const signin = async(req, res, next)=>{
     
   } catch (error) {
     console.log(error)
-    return next(errorHandler(404,"Vos informations sont invalide"))
+     next(error)
   }
 
 }

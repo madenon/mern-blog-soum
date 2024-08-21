@@ -3,39 +3,43 @@
 import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react'
 import React, { useState } from 'react'
 import { Link,useNavigate } from 'react-router-dom'
+import { signInStart,signInSuccess, signInFailure } from '../redux/user/userSlice'
+import { useDispatch, useSelector } from 'react-redux'
+
 
 export default function Signin() {
   const [formData, setFormData] = useState({})
-  const [errorMessage, setErrorMessage] = useState(null)
-  const [loading, setLoading] = useState(false)
+  //user vient de username du userSlice
+  const {loading, error:errorMessage} = useSelector(state=>state.user)
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+
 const handleChange =(e)=>
   {setFormData({...formData, [e.target.id]:e.target.value.trim()})
 };
+
 const handleSubmit = async(e)=>{
-  if(!formData.email || !formData.password){
-    setErrorMessage("Tout les champs sont requis")
+  e.preventDefault();
+  if(!formData.email || !formData.password ||email==="" ||password===""){
+    return dispatch(signInFailure("S'il vous plait les champs sont obligatoire pour se connecter"))
   }
-e.preventDefault();
 try {
-  setLoading(true)
-  setErrorMessage(null)
+ dispatch(signInStart())
   const res = await fetch("/api/auth/signin",{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify(formData),
   });
-  const  data = res.json()
+  const  data = await res.json()
   if(data.success===false){
-    return setErrorMessage(data.message)
+    dispatch(signInFailure(data.message))
   }
-  setLoading(false)
    if(res.ok){
+    dispatch(signInSuccess(data))
     navigate("/")
    }
 } catch (error) {
-  setErrorMessage(error.message)
-  setLoading(false)
+ dispatch(signInFailure(error.message))
   
 }
 }
@@ -95,10 +99,9 @@ flex-col md:flex-row md:items-center gap-5">
     <span>Vous n'avez pas de compte?</span>
     <Link to="/sign-up" className='text-blue-500'>S'inscrire</Link>
   </div>
-  {
-    errorMessage &&  (
+  {errorMessage &&  (
       <Alert className='mt-5' color="failure">
- {errorMessage}
+        {errorMessage}
       </Alert>
     )
   }
