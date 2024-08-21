@@ -43,6 +43,7 @@ try {
     <Button type='button' 
     gradientDuoTone="pinkToOrange" outline onClick={handleGoogleClick}>
         <AiFillGoogleCircle className='w-6 h-6 mr-2'/>
-    </Button>
+        CONTINUER AVEC GOOGLE
+            </Button>
   )
 }
