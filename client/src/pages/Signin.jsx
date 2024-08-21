@@ -5,6 +5,7 @@ import React, { useState } from 'react'
 import { Link,useNavigate } from 'react-router-dom'
 import { signInStart,signInSuccess, signInFailure } from '../redux/user/userSlice'
 import { useDispatch, useSelector } from 'react-redux'
+import Aouth from '../components/Aouth'
 
 
 export default function Signin() {
@@ -94,6 +95,7 @@ flex-col md:flex-row md:items-center gap-5">
  
 ):"Se connecter" }
     </Button>
+    <Aouth/>
   </form>
   <div className="flex gap-2 text-sm mt-5">
     <span>Vous n'avez pas de compte?</span>

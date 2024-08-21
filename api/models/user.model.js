@@ -9,6 +9,10 @@ const userSchema = new mongoose.Schema({
     },
     password:{
         type:String,required:true
+    },
+    profilePicture:{
+        type:String,
+        default:"https://th.bing.com/th/id/OIG2.9O4YqGf98tiYzjKDvg7L"
     }
 },{timestamps:true})
 const User = mongoose.model("User", userSchema)
