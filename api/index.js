@@ -3,7 +3,7 @@ import cors from "cors";
 import  "dotenv/config"
 const app = express()
 import mongoose from "mongoose";
-
+import userRoutes from "./routes/user.route.js"
 
 const PORT=process.env.PORT || 3000
 mongoose.connect(process.env.MONGO).then(()=>{
@@ -16,8 +16,8 @@ mongoose.connect(process.env.MONGO).then(()=>{
 app.use(express.json())
 app.use(cors())
 
+app.use("/api/user", userRoutes)
 
-
-app.listen(3000, ()=>{
+app.listen(PORT, ()=>{
     console.log(`Server bien demarré http://localhost:${PORT}`)
 })
