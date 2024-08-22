@@ -52,3 +52,18 @@ if(req.body.username){
 
 
 }
+
+
+export const deletUser =async(req, res, next)=>{
+     if(req.user.id !== req.params.userId) {
+        return next(errorHandler(403, "Désolé pour essayez de supprimer un compte qui ne vous appartients pas"))
+     }
+     try {
+        await User.findByIdAndDelete(req.params.userId);
+        res.status(200).json("Utilisateur a bien été supprimé")
+        
+     } catch (error) {
+        next(error)
+        
+     }
+}
