@@ -31,6 +31,7 @@ if(req.body.username){
         return next(errorHandler(400, "Le nom d'utilisateur doit etre uniquement en letre de où de a à z les chiffres de 0  à 9"))
 
     }
+}
 
     try {
         const  updateUser = await User.findByIdAndUpdate(req.params.userId,{
@@ -48,6 +49,6 @@ if(req.body.username){
         console.log(error)
         next(error)
     }
-}
+
 
 }
