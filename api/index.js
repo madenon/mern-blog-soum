@@ -1,6 +1,7 @@
 import express from "express"
 import cors from "cors";
-import  "dotenv/config"
+import  "dotenv/config";
+import cookieParser from "cookie-parser";
 const app = express()
 import mongoose from "mongoose";
 import userRoutes from "./routes/user.route.js"
@@ -15,6 +16,7 @@ mongoose.connect(process.env.MONGO).then(()=>{
 
 app.use(express.json())
 app.use(cors())
+app.use(cookieParser())
 
 app.use("/api/user", userRoutes)
 app.use("/api/auth", authRoute)
