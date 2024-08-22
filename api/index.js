@@ -6,6 +6,9 @@ const app = express()
 import mongoose from "mongoose";
 import userRoutes from "./routes/user.route.js"
 import authRoute from "./routes/auth.route.js"
+import postRoutes from "./routes/post.route.js"
+
+
 const PORT=process.env.PORT || 3000
 mongoose.connect(process.env.MONGO).then(()=>{
     console.log("Connexion à la base de donnée")
@@ -20,6 +23,7 @@ app.use(cookieParser())
 
 app.use("/api/user", userRoutes)
 app.use("/api/auth", authRoute)
+app.use("/api/post", postRoutes)
 
 app.use((err, req, res, next)=>{
     const statusCode = err.statusCode || 500;
