@@ -1,6 +1,7 @@
 import { Alert, Button, Modal, TextInput } from "flowbite-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import {Link} from "react-router-dom"
 import {
   getDownloadURL,
   getStorage,
@@ -18,7 +19,7 @@ import { HiOutlineExclamationCircle} from "react-icons/hi"
 export default function DashProfile() {
   const [updateUserSuccess,setUpdateUserSuccess] =useState(null)
   const [imageFile, setImageFile] = useState(null);
-  const { currentUser,error } = useSelector((state) => state.user);
+  const { currentUser,error, loading } = useSelector((state) => state.user);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imageFileUploadError, setImageFileUploadError] = useState(null);
   const [imageFileUploaProgress, setImageFileUploadProgess] = useState(false);
@@ -237,9 +238,22 @@ setFormData({...formData, [e.target.id]:e.target.value})
          onChange={handleChange}
 
          />
-        <Button type="submit" gradientDuoTone="purpleToBlue" outline>
-          Mettre à jour le profile
+        <Button type="submit" 
+        gradientDuoTone="purpleToBlue" disabled={loading || imageFileUploading} outline>
+        {loading ? "Loading..." :"Mettre à jour le profile"}
+        
         </Button>
+
+        {currentUser && currentUser.isAdmin && (
+        <Link to={'/create-post'}>
+           <Button type="button"
+            gradientDuoTone="purpleToPink"
+            className="w-full"
+            >
+        Crée un post
+           </Button>
+        </Link>
+        )}
       </form>
 
       <div className="text-red-500 flex justify-between mt-5">
