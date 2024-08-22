@@ -13,6 +13,10 @@ const userSchema = new mongoose.Schema({
     profilePicture:{
         type:String,
         default:"https://th.bing.com/th/id/OIG2.9O4YqGf98tiYzjKDvg7L"
+    },
+    isAdmin:{
+        type:Boolean,
+        default:false
     }
 },{timestamps:true})
 const User = mongoose.model("User", userSchema)
