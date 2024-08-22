@@ -1,9 +1,60 @@
-import { Button, FileInput, Select, TextInput } from "flowbite-react";
-import React from "react";
+import { Alert, Button, FileInput, Select, TextInput } from "flowbite-react";
+import React, { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { app } from "../firebase";
+import "react-circular-progressbar/dist/styles.css";
+import { CircularProgressbar } from "react-circular-progressbar";
+
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
 
 export default function CreatePost() {
+  const [file, setFile] = useState(null);
+  const [formData, setFormData] = useState({});
+  const [imageFileUploadError, setImageFileUploadError] = useState(null);
+  const [imageUploadProgress, setImageUploadProgress] = useState(null);
+  const handleUploadImage = async () => {
+    try {
+      if (!file) {
+        setImageFileUploadError("Charger une image");
+        return;
+      }
+      setImageFileUploadError(null);
+      const storage = getStorage(app);
+      const fileName = new Date().getTime() + "-" + file.name;
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setImageUploadProgress(progress.toFixed(0));
+        },
+        (error) => {
+          setImageFileUploadError("échec de telechargement d'image");
+          setImageUploadProgress(null);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            setImageUploadProgress(null);
+            setImageFileUploadError(null);
+            setFormData({ ...formData, image: downloadURL });
+          });
+        }
+      );
+    } catch (error) {
+      setImageFileUploadError("échec de telechargement d'image");
+      setImageUploadProgress(null);
+      console.log(error);
+    }
+  };
   const modules = {
     toolbar: [
       [{ header: [1, 2, 3, 4, 5, 6, false] }],
@@ -14,7 +65,7 @@ export default function CreatePost() {
         { indent: "-1" },
         { indent: "+1" },
       ],
-      ["link", "image","video"],
+      ["link", "image", "video"],
       ["clean"],
     ],
   };
@@ -36,9 +87,7 @@ export default function CreatePost() {
   return (
     <div className="p-3 max-w-3xl mx-auto min-h-screen">
       <h1
-        className="text-centertext-3xl 
-my-7 font-semibold"
-      >
+        className="text-centertext-3xl my-7 font-semibold">
         Créer post
       </h1>
       <form className="flex flex-col gap-4">
@@ -68,17 +117,42 @@ my-7 font-semibold"
  items-center justify-between
   border-4 border-teal-500 border-dotted p-3"
         >
-          <FileInput type="file" accept="image/*" />
+          <FileInput
+            type="file"
+            accept="image/*"
+            onChange={(e) => setFile(e.target.files[0])}
+          />
           <Button
             type="button"
             gradientDuoTone="purpleToBlue"
             size="sm"
             outline
+            onClick={handleUploadImage}
+            disabled={imageUploadProgress}
           >
-            Charger une image
+            {imageUploadProgress ? (
+              <div className="w-16 h-16">
+                <CircularProgressbar
+                  value={imageUploadProgress}
+                  text={`${imageUploadProgress || 0}%`}
+                />
+              </div>
+            ) : (
+              "Charger une image"
+            )}
           </Button>
         </div>
+        {imageFileUploadError && (
+          <Alert color="failure">{imageFileUploadError}</Alert>
+        )}
 
+        {formData.image && (
+          <img
+            src={formData.image}
+            alt="uploa"
+            className="w-full h-72 object-cover"
+          />
+        )}
         <ReactQuill
           modules={modules}
           formats={formats}
