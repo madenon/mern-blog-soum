@@ -37,17 +37,19 @@ export const getposts = async (req, res, next) => {
     const posts = await Post.find({
       ...(req.query.userId && { userId: req.query.userId }),
       ...(req.query.category && { category: req.query.category }),
-      ...(req.query.slug && { category: req.query.slug }), 
-      ...(req.query.postId && { _id: req.query.postId }), 
-      ...( req.query.searchTerm && {
+      ...(req.query.slug && { category: req.query.slug }),
+      ...(req.query.postId && { _id: req.query.postId }),
+      ...(req.query.searchTerm && {
         $or: [
-            { title: { $regex: req.query.searchTerm, $options: "i" } },
-            { source: { $regex: req.query.searchTerm, $options: "i" } },
-            { content: { $regex: req.query.searchTerm, $options: "i" } },
-          ],
-      })
-    
-    }).sort({ updatedAt:sortDirection }).skip(startIndex).limit(limit)
+          { title: { $regex: req.query.searchTerm, $options: "i" } },
+          { source: { $regex: req.query.searchTerm, $options: "i" } },
+          { content: { $regex: req.query.searchTerm, $options: "i" } },
+        ],
+      }),
+    })
+      .sort({ updatedAt: sortDirection })
+      .skip(startIndex)
+      .limit(limit);
 
     const totalPosts = await Post.countDocuments();
     const now = new Date();
@@ -57,33 +59,55 @@ export const getposts = async (req, res, next) => {
       now.getDate()
     );
     const latMonthPosts = await Post.countDocuments({
-        createdAt: { $gte: oneMonthAgo },
-      });
-      res.status(200).json({
-        posts,
-        totalPosts,
-        latMonthPosts,
-      });
-
+      createdAt: { $gte: oneMonthAgo },
+    });
+    res.status(200).json({
+      posts,
+      totalPosts,
+      latMonthPosts,
+    });
   } catch (error) {
-    console.log(error)
-    next(error)
+    console.log(error);
+    next(error);
   }
 };
 
-
-
-export const deletpost = async(req, res ,next)=>{
-  if(!req.user.isAdmin || req.user.id !== req.params.userId){
-    return next(errorHandler(403, "Vous ne pouvez pas supprimer ce post"))
+export const deletpost = async (req, res, next) => {
+  if (!req.user.isAdmin || req.user.id !== req.params.userId) {
+    return next(errorHandler(403, "Vous ne pouvez pas supprimer ce post"));
   }
 
   try {
-    await  Post.findByIdAndDelete(req.params.postId);
-    res.status(200).json("Le post a bien été supprimé")
-    
+    await Post.findByIdAndDelete(req.params.postId);
+    res.status(200).json("Le post a bien été supprimé");
   } catch (error) {
-    next(error)
-    
+    next(error);
   }
-}
+};
+
+export const updatepost = async (req, res, next) => {
+  if (!req.user.isAdmin || req.user.id !== req.params.userId) {
+    return next(
+      errorHandler(403, "Vous n'etes pas autorisé à modifier ce contenu")
+    );
+  }
+  try {
+    const updatedPost = await Post.findByIdAndUpdate(
+      req.params.postId,
+      {
+        $set: {
+          title: req.body.title,
+          content: req.body.content,
+          category: req.body.category,
+          source: req.body.source,
+          image: req.body.image,
+        },
+      },
+      { new: true }
+    );
+    res.status(200).json(updatedPost);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
