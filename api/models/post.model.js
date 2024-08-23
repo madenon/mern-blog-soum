@@ -9,7 +9,8 @@ const postSchema = new mongoose.Schema({
         type:String, required:true
     },
     content:{
-        type:String, required:true
+        type:String, required:true,
+        max:2000
     },
     source:{
         type:String, required:true

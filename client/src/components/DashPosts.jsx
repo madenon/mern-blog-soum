@@ -6,14 +6,18 @@ import { Link } from "react-router-dom";
 export default function DashPosts() {
   const { currentUser } = useSelector((state) => state.user);
   const [userPosts, setUserPost] = useState([]);
+  const [showMore, setShorMore] = useState(true)
   console.log(userPosts);
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const res = await fetch(`/api/post/getpost?userId=${currentUser._id}`);
+        const res = await fetch(`/api/post/getposts?userId=${currentUser._id}`);
         const data = await res.json();
         if (res.ok) {
           setUserPost(data.posts);
+          if(data.length < 9){
+            setShorMore(false)
+          }
           // posts vient du backend
         }
       } catch (error) {
@@ -24,6 +28,29 @@ export default function DashPosts() {
       fetchPosts();
     }
   }, [currentUser._id]);
+
+
+
+const handleShowMore = async()=>{
+  const startIndex = userPosts.length;
+
+try {
+  const res =  await fetch(`/api/post/getposts?userId=${currentUser._id}&startIndex=${startIndex}`);
+  const data = await  res.json();
+  if(res.ok){
+    setUserPost((preve)=>[...preve, ...data.posts]);
+    if(data.posts.length < 9){
+      setShorMore(false)
+    }
+
+  }
+  
+} catch (error) {
+  
+  console.log(error)
+}
+}
+
   return (
     <div  className="table-auto  overflow-scroll md:mx-auto p-3 scrollbar
     scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
@@ -83,9 +110,14 @@ export default function DashPosts() {
               </Table.Body>
             ))}
           </Table>
+
+          {showMore  && (
+            <button
+             onClick={handleShowMore} className="w-full text-teal-500 self-center text-sm py-7">Voir plus de post</button>
+          )}
         </>
       ) : (
-        <p>Vous navigator;avez pas de posts </p>
+        <p>Vous n'avez pas de posts </p>
       )}
     </div>
   );

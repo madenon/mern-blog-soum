@@ -6,7 +6,7 @@ const router = express.Router()
 
 
 router.post('/create',  verifyToekn, create)
-router.get('/getpost',  verifyToekn, getposts)
+router.get('/getposts',  verifyToekn, getposts)
 
 
 export  default router
