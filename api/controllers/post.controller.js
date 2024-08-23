@@ -70,3 +70,20 @@ export const getposts = async (req, res, next) => {
     next(error)
   }
 };
+
+
+
+export const deletpost = async(req, res ,next)=>{
+  if(!req.user.isAdmin || req.user.id !== req.params.userId){
+    return next(errorHandler(403, "Vous ne pouvez pas supprimer ce post"))
+  }
+
+  try {
+    await  Post.findByIdAndDelete(req.params.postId);
+    res.status(200).json("Le post a bien été supprimé")
+    
+  } catch (error) {
+    next(error)
+    
+  }
+}
