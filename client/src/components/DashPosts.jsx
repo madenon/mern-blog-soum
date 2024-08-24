@@ -7,7 +7,7 @@ import { HiOutlineExclamationCircle } from "react-icons/hi";
 export default function DashPosts() {
   const { currentUser } = useSelector((state) => state.user);
   const [userPosts, setUserPost] = useState([]);
-  const [showMore, setShorMore] = useState(true)
+  const [showMore, setShowMore] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [postIdToDelete, setPostIdToDelete] = useState('')
 
@@ -18,13 +18,13 @@ export default function DashPosts() {
         const data = await res.json();
         if (res.ok) {
           setUserPost(data.posts);
-          if(data.posts.length < 9){
-            setShorMore(false)
+          if(data.posts.length < 4){
+            setShowMore(false)
           }
           // posts vient du backend
         }
       } catch (error) {
-        console.log(error);
+        console.log(error.message);
       }
     };
     if (currentUser.isAdmin) {
@@ -35,16 +35,15 @@ export default function DashPosts() {
 
 
 const handleShowMore = async()=>{
-  setShorMore(true)
+  setShowMore(true)
   const startIndex = userPosts.length;
-
 try {
   const res =  await fetch(`/api/post/getposts?userId=${currentUser._id}&startIndex=${startIndex}`);
   const data = await  res.json();
   if(res.ok){
     setUserPost((preve)=>[...preve, ...data.posts]);
-    if(data.posts.length < 9){
-      setShorMore(false)
+    if(data.posts.length < 4){
+      setShowMore(false)
     }
 
   }
@@ -94,7 +93,7 @@ const handelDeletePost = async()=>{
             </Table.Head>
 
             {userPosts.map((post) => (
-              <Table.Body className="divide-y-0">
+              <Table.Body className="divide-y-0" key={post._id}>
                 <Table.Row className="bg-white dark:border-gray-700 dark:text-gray-800">
                   <Table.Cell>
                     {new Date(post.updatedAt).toLocaleDateString()}

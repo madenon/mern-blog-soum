@@ -1,123 +1,138 @@
-import User from "../models/user.model.js"
-import { errorHandler } from "../utils/error.js"
-import bcrypts from "bcryptjs"
+import User from "../models/user.model.js";
+import { errorHandler } from "../utils/error.js";
+import bcrypts from "bcryptjs";
 
-export const test = (req, res)=>{
-    res.json({message:"Hello from controller Api Rest node js"})
-}
+export const test = (req, res) => {
+  res.json({ message: "Hello from controller Api Rest node js" });
+};
 
-export const updateUser = async(req, res,next)=>{
-if(req.user.id !== req.params.userId){
-    return next(errorHandler(403, "Vous ne puvez pas mettre à jour le profile d'une autre personnes"))
-} 
-if(req.body.password){
-    if(req.body.password.length < 8){
-        return next(errorHandler(401, "Mot de passe faible au moins 8 caractères"));
+export const updateUser = async (req, res, next) => {
+  if (req.user.id !== req.params.userId) {
+    return next(
+      errorHandler(
+        403,
+        "Vous ne puvez pas mettre à jour le profile d'une autre personnes"
+      )
+    );
+  }
+  if (req.body.password) {
+    if (req.body.password.length < 8) {
+      return next(
+        errorHandler(401, "Mot de passe faible au moins 8 caractères")
+      );
     }
- req.body.password = bcrypts.hashSync(req.body.password, 10);
-}   
-if(req.body.username){
-    if(req.body.username.length < 7 || req.body.username.length > 20){
-        return next(errorHandler(400, "La longueur du nom doit etre entre 7 et 20"))
+    req.body.password = bcrypts.hashSync(req.body.password, 10);
+  }
+  if (req.body.username) {
+    if (req.body.username.length < 7 || req.body.username.length > 20) {
+      return next(
+        errorHandler(400, "La longueur du nom doit etre entre 7 et 20")
+      );
     }
-    if(req.body.username.includes(' ')){
-        return next(errorHandler(400, "Le nom d utilisateur ne doit pas contenir d'espace"))
-    }
-
-    if(req.body.username !== req.body.username.toLowerCase()){
-        return next(errorHandler(400, "Le nom d'utilisateur est en miniscule"))
-    }
-    if(!req.body.username.match(/^[a-zA-Z0-9]+$/)){
-        return next(errorHandler(400, "Le nom d'utilisateur doit etre uniquement en letre de où de a à z les chiffres de 0  à 9"))
-
-    }
-}
-
-    try {
-        const  updateUser = await User.findByIdAndUpdate(req.params.userId,{
-            $set:{
-                username: req.body.username,
-                email: req.body.email,
-                profilePicture: req.body.profilePicture,
-                password:req.body.password
-            },
-        }, {new:true});
-        const {password, ...rest} = updateUser._doc;
-        res.status(200).json(rest)
-        
-    } catch (error) {
-        console.log(error)
-        next(error)
+    if (req.body.username.includes(" ")) {
+      return next(
+        errorHandler(400, "Le nom d utilisateur ne doit pas contenir d'espace")
+      );
     }
 
-
-}
-
-
-export const deletUser =async(req, res, next)=>{
-     if(req.user.id !== req.params.userId) {
-        return next(errorHandler(403, "Désolé pour essayez de supprimer un compte qui ne vous appartients pas"))
-     }
-     try {
-        await User.findByIdAndDelete(req.params.userId);
-        res.status(200).json("Utilisateur a bien été supprimé")
-        
-     } catch (error) {
-        next(error)
-        
-     }
-}
-
-export const signout = async(req, res, next)=>{
-    try {
-        
-        res.clearCookie('access_token').status(200).json('Utilisateur a bien été déconnecté')
-    } catch (error) {
-        next(error)
-        
+    if (req.body.username !== req.body.username.toLowerCase()) {
+      return next(errorHandler(400, "Le nom d'utilisateur est en miniscule"));
     }
-
-}
-
-export const getUsers = async(req, res, next) =>{
-    if(!req.user.isAdmin){
-        return next(errorHandler(403, "Vous ne pouvez pas voir les utilisateur"))
+    if (!req.body.username.match(/^[a-zA-Z0-9]+$/)) {
+      return next(
+        errorHandler(
+          400,
+          "Le nom d'utilisateur doit etre uniquement en letre de où de a à z les chiffres de 0  à 9"
+        )
+      );
     }
-    try {
-        const startIndex = parseInt(req.query.startIndex) ||0;
-        const limit = parseInt(req.query.limit) ||9;
-        const sortDirection = req.query.sort ==='asc' ? 1 : -1;
+  }
 
-        const users = await User.find()
-        .sort({createdAt:sortDirection})
-        .skip({startIndex})
-        .limit({limit})
+  try {
+    const updateUser = await User.findByIdAndUpdate(
+      req.params.userId,
+      {
+        $set: {
+          username: req.body.username,
+          email: req.body.email,
+          profilePicture: req.body.profilePicture,
+          password: req.body.password,
+        },
+      },
+      { new: true }
+    );
+    const { password, ...rest } = updateUser._doc;
+    res.status(200).json(rest);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
 
-const usersWithoutPassword = users.map((user)=>{
-    const {password, ...rest} = user._doc;
-    return rest
-});
-const totalUser = await User.countDocuments();
-const now = new Date()
-const oneMonthAgo = new Date(
-    now.getFullYear(),
-    now.getMonth() - 1,
-    now.getDate()
-)
+export const deletUser = async (req, res, next) => {
+  if (req.user.id !== req.params.userId) {
+    return next(
+      errorHandler(
+        403,
+        "Désolé pour essayez de supprimer un compte qui ne vous appartients pas"
+      )
+    );
+  }
+  try {
+    await User.findByIdAndDelete(req.params.userId);
+    res.status(200).json("Utilisateur a bien été supprimé");
+  } catch (error) {
+    next(error);
+  }
+};
 
-const latMonthPosts = await User.countDocuments({
-    createdAt: { $gte: oneMonthAgo },
-  });
-  res.status(200).json({
-    users:usersWithoutPassword,
-    totalUser,
-    latMonthPosts
-  });
-        
-    } catch (error) {
-        console.log(error)
-        next(error)
-        
-    }
+export const signout = async (req, res, next) => {
+  try {
+    res
+      .clearCookie("access_token")
+      .status(200)
+      .json("Utilisateur a bien été déconnecté");
+  } catch (error) {
+    next(error);
+  }
+};
 
-}
+export const getUsers = async (req, res, next) => {
+  if (!req.user.isAdmin) {
+    return next(errorHandler(403, "Vous ne pouvez pas voir les utilisateur"));
+  }
+  try {
+    const startIndex = parseInt(req.query.startIndex) || 0;
+    const limit = parseInt(req.query.limit) || 9;
+    const sortDirection = req.query.sort === "asc" ? 1 : -1;
+
+    const users = await User.find()
+      .sort({ createdAt: sortDirection })
+      .skip({ startIndex })
+      .limit({ limit });
+
+    const usersWithoutPassword = users.map((user) => {
+      const { password, ...rest } = user._doc;
+      return rest;
+    });
+    const totalUser = await User.countDocuments();
+    const now = new Date();
+    const oneMonthAgo = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      now.getDate()
+    );
+
+    const latMonthUsers = await User.countDocuments({
+      createdAt: { $gte: oneMonthAgo },
+    });
+    res.status(200).json({
+      users: usersWithoutPassword,
+      totalUser,
+      latMonthUsers,
+    });
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};

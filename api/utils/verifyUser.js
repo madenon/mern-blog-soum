@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { errorHandler } from "./error.js";
 
-export const verifyToekn = (req, res, next) => {
+export const verifyToken = (req, res, next) => {
   const token = req.cookies.access_token;
   if (!token) {
     return next(errorHandler(401, "Vous n'avez pas d'autorisation"));
