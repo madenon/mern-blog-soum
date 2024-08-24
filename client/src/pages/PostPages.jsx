@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Button, Spinner } from "flowbite-react";
 import CallToActions from "../components/CallToActions";
+import CommentSection from "../components/CommentSection";
 export default function PostPages() {
   const { postSlug } = useParams();
   const [loading, setLoading] = useState(true);
@@ -72,6 +73,7 @@ export default function PostPages() {
 <CallToActions />
   
 </div>
+<CommentSection postId={post._id} />
     </main>
   );
 }
