@@ -110,7 +110,9 @@ const handelDeletePost = async()=>{
 
 
                   <Table.Cell>
-                    <Link className="text-gray-900 dark:text-white" to={`/post/${post.slug}`} >{post.title}</Link>
+                  {/* <p dangerouslySetInnerHTML={{ __html: shortDescription }} /> */}
+                    {/* <Link className="text-gray-900 dark:text-white" to={`/post/${post.slug}`} >{post.title}</Link> */}
+                    <Link dangerouslySetInnerHTML={{__html:post.title}} to={`/post/${post.slug}`}></Link>
                   </Table.Cell>
                   <Table.Cell>
                     <Link  >{post.category}</Link>
