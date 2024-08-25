@@ -1,4 +1,5 @@
 import Comment from "../models/comment.model.js";
+
 import { errorHandler } from "../utils/error.js";
 
 export const createComment = async (req, res, next) => {
@@ -10,7 +11,6 @@ export const createComment = async (req, res, next) => {
         errorHandler("Vous n'êtes pas autorisé à mettre un commentaire ")
       );
     }
-
     const newComment = new Comment({
       content,
       postId,
@@ -58,4 +58,29 @@ export const  likeComment= async(req, res ,next)=>{
      next(error)
   }
 
+}
+
+
+export const editComment = async(req, res, next)=>{
+  try {
+    const comment = await Comment.findById(req.params.commentId)
+     if(!comment){
+      return next(errorHandler(404, "Commentaire non trouvé"))
+     }
+
+     if(comment.userId !== req.user.id &&  !req.user.isAdmin){
+      return next(errorHandler(404, "Vous ne pouvez pas modifier ce commentaire "))
+
+     }
+     const editComment = await Comment.findByIdAndUpdate(
+       req.params.commentId,
+       {
+        content:req.body.content
+       },
+       {new:true}
+     );
+     res.status(200).json(editComment)
+  } catch (error) {
+    console.log(error)
+  }
 }
