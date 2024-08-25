@@ -9,7 +9,7 @@ import { Button, Textarea } from "flowbite-react";
 TimeAgo.setDefaultLocale(fr.locale);
 TimeAgo.addLocale(fr);
 import { useNavigate } from "react-router-dom";
-export default function Comment({ comment,onEdit }) {
+export default function Comment({ comment,onEdit,onDelete }) {
   const [user, setUser] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(comment.content);
@@ -115,13 +115,27 @@ export default function Comment({ comment,onEdit }) {
           </button> */}
 
     {currentUser &&  (currentUser._id === comment.userId || currentUser.isAdmin) && (
+                 <>
+                  <div className="flex  p-4 gap-3">
                   <button
                     onClick={handleEdit}
                     type="button"
-                    className="text-gray-400 hover:text-blue-500"
+                    className="text-gray-400 hover:text-blue-500 gap-4"
                   >
-                    Modifier le commentaire
+                    Modifier
                   </button>
+
+
+                <button
+                    onClick={() =>onDelete(comment._id)}
+                    type="button"
+                    className="text-gray-400 hover:text-red-500 gap-4"
+                  >
+                    Supprimer 
+                  </button>
+                  </div>
+
+                  </>
                 )}
             </div>
           </>
