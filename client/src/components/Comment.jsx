@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
-import moment from "moment";
 import "moment/locale/fr";
 import { FaThumbsUp } from "react-icons/fa";
+
+import   TimeAgo from "javascript-time-ago";
+import moment from "moment"
+ import fr  from "javascript-time-ago/locale/fr.json"
+ import "moment/locale/fr"; //always use French
+ TimeAgo.setDefaultLocale(fr.locale)
+ TimeAgo.addLocale(fr)
 
 export default function Comment({ comment, onLike }) {
   const [user, setUser] = useState({});
@@ -22,8 +28,8 @@ export default function Comment({ comment, onLike }) {
     getUser();
   }, [comment]);
   return (
-    <div>
-      <div className="flex p-4 border-b dark:border-gray-600 text-sm">
+    <div className="lfex p-4 border-b dark:border-gray-600 text-sm">
+      <div className="flex shrink-0 mr-3">
         <img
           className="w-10 h-10 
     rounded-full bg-gray-200 flex-shrink-0 mr-3"
@@ -37,13 +43,14 @@ export default function Comment({ comment, onLike }) {
             {user ? `@${user.username}` : "Utilisateur anonyme"}
           </span>
           {/* <span> */}
-            {/* <span className="text-xs text-gray-500">
-              {moment(comment.createdAt).format("MMMM Do YYYY HH:mm")}
-            </span> */}
-            <span className='text-gray-500 text-xs'>
-            {moment(comment.createdAt).fromNow()}
+            <span className="text-xs text-gray-500">
+              {moment(comment.createdAt).format("MMMM Do YYYY HH:mm  ")}
+            </span>
+            {/* {  '  ****'    } */}
+            {/* <span className='text-gray-500 text-xs'> */}
+            {/* {moment(comment.createdAt).fromNow()} */}
           {/* </span> */}
-          </span>
+          {/* </span> */}
         </div>
         <p className="text-gray-500 pb-2">{comment.content}</p>
         <div className="">
