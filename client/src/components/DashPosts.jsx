@@ -18,7 +18,7 @@ export default function DashPosts() {
         const data = await res.json();
         if (res.ok) {
           setUserPost(data.posts);
-          if(data.posts.length < 4){
+          if(data.posts.length < 9){
             setShowMore(false)
           }
           // posts vient du backend
@@ -42,7 +42,7 @@ try {
   const data = await  res.json();
   if(res.ok){
     setUserPost((preve)=>[...preve, ...data.posts]);
-    if(data.posts.length < 4){
+    if(data.posts.length < 9){
       setShowMore(false)
     }
 

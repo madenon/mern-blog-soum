@@ -24,7 +24,7 @@ export default function DashboardComponent() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("/api/user/getusers?limit=5");
+        const res = await fetch("/api/user/getusers?limit=100");
         const data = await res.json();
         if (res.ok) {
           setUser(data.users);
@@ -38,7 +38,7 @@ export default function DashboardComponent() {
 
     const fetchPosts = async () => {
       try {
-        const res = await fetch("/api/post/getposts?limit=5");
+        const res = await fetch("/api/post/getposts?limit=100");
         const data = await res.json();
         if (res.ok) {
           setPosts(data.posts);
@@ -52,7 +52,7 @@ export default function DashboardComponent() {
 
     const fetchComments = async () => {
       try {
-        const res = await fetch("/api/comment/getcomments?limit=5");
+        const res = await fetch("/api/comment/getcomments?limit=100");
         const data = await res.json();
         if (res.ok) {
           setComments(data.comments);
