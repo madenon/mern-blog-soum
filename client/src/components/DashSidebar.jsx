@@ -4,6 +4,7 @@ import { useState } from "react";
 import {
   HiAnnotation,
   HiArrowSmRight,
+  HiChartPie,
   HiDocumentText,
   HiOutlineUserGroup,
   HiUser,
@@ -43,7 +44,22 @@ export default function DashSidebar() {
   return (
     <Sidebar className="w-full md:w-56">
       <Sidebar.Items>
-        <Sidebar.ItemGroup className="flex flex-col gap-3">
+        <Sidebar.ItemGroup className="flex flex-col gap-1">
+          {
+            currentUser && currentUser.isAdmin  &&(
+              <Link to="/dashboard?tab=dash">
+            <Sidebar.Item
+            active={tab==='dash' || !tab}
+              icon={HiChartPie}
+              labelColor="dark"
+              as="div"
+            >
+              Tableau de borad
+            </Sidebar.Item>
+          </Link>
+
+            )
+          }
           <Link to="/dashboard?tab=profile">
             <Sidebar.Item
               active={tab === "profile"}
@@ -90,6 +106,7 @@ export default function DashSidebar() {
               </Sidebar.Item>
             </Link>
           )}
+
 
           <Sidebar.Item
             onClick={handleSignout}
