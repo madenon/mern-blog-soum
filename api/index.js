@@ -8,7 +8,8 @@ import userRoutes from "./routes/user.route.js"
 import authRoute from "./routes/auth.route.js"
 import postRoutes from "./routes/post.route.js"
 import commentRoutes from "./routes/comment.route.js"
-
+import path from "path"
+import exp from "constants";
 const PORT=process.env.PORT || 3000
 mongoose.connect(process.env.MONGO).then(()=>{
     console.log("Connexion à la base de donnée")
@@ -16,6 +17,8 @@ mongoose.connect(process.env.MONGO).then(()=>{
     console.log("échec connexion à la base de donnée")
 })
 
+
+const __dirname = path.resolve()
 
 app.use(express.json())
 app.use(cors())
@@ -25,6 +28,11 @@ app.use("/api/user", userRoutes)
 app.use("/api/auth", authRoute)
 app.use("/api/post", postRoutes)
 app.use("/api/comment", commentRoutes)
+app.use(express.static(path.join(__dirname, '/client/dist')))
+
+app.get('*', (req, res)=>{
+    res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'))
+})
 
 app.use((err, req, res, next)=>{
     const statusCode = err.statusCode || 500;
