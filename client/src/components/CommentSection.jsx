@@ -61,33 +61,7 @@ export default function CommentSection({ postId }) {
 
 
 
-// const handleLike = async (commentId)=>{
-//  try {
-//    if(!currentUser){
-//     navigate("/sign-in")
-//     return 
-//    }
-//    const res = await fetch(`/api/comment/likeComments/${commentId}`,
-//     {
-//       method:'PUT',
-  
-//     });
-//     if(res.ok){
-//       const data = await res.json()
-//       setComments(comments.map((comment)=>{
-//         comment._id=== commentId ?{
-//           ...comment,
-//           likes: data.likes,
-//           numberOfLikes: data.likes.length
-//         }: comment
-//       }))
-//     }
-  
-//  } catch (error) {
-//   console.log(error.message)
-  
-//  }
-// }
+
 
 
 

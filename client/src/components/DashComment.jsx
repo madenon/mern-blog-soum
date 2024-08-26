@@ -91,7 +91,7 @@ const handelDeleteComments = async()=>{
             <Table.Head>
               <Table.HeadCell>Date de modification</Table.HeadCell>
               <Table.HeadCell>Contenu du  commentaire</Table.HeadCell>
-              <Table.HeadCell>Nombre de Likes</Table.HeadCell>
+              <Table.HeadCell></Table.HeadCell>
               <Table.HeadCell>Identifiant du post</Table.HeadCell>
               <Table.HeadCell>Identifiant utilisateur</Table.HeadCell>
               <Table.HeadCell>Supprimer </Table.HeadCell>
@@ -107,7 +107,7 @@ const handelDeleteComments = async()=>{
                     {comment.content}
                   </Table.Cell>
 
-                  <Table.Cell>{comment.numberOfLikes}</Table.Cell>
+                  <Table.Cell></Table.Cell>
                   <Table.Cell>{comment.postId}</Table.Cell>
                   <Table.Cell>{comment.userId}</Table.Cell>
 
