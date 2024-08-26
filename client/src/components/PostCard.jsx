@@ -15,7 +15,7 @@ export default function PostCard({ post }) {
       </Link>
 
       <div className="p-3 flex flex-col gap-2">
-        <p className="text-lg font-semibold line-clamp-2">{post.title}</p>
+        <p className="text-lg font-semibold line-clamp-2" dangerouslySetInnerHTML={{__html: post.title}}></p>
         <span className="italic text-sm">{post.category}</span>
         <Link to={`/post/${post.slug}`}
          className="z-10 group-hover:bottom-0 absolute bottom-[-200px] left-0 right-0 border
