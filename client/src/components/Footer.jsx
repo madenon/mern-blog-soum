@@ -1,6 +1,7 @@
 import { Footer } from "flowbite-react";
 import { Link } from "react-router-dom";
 import React from "react";
+import Logo from "../assets/assets/logo.png";
 
 import { BsFacebook, BsInstagram, BsTwitter, BsGoogle } from "react-icons/bs";
 
@@ -19,13 +20,11 @@ export default function FooterCom() {
               className="self-center whitespace-nowrap
        text-lg sm:text-xl font-semibold dark:text-white"
             >
-              <span
-                className="px-2 py-1 
-      bg-gradient-to-r from-indigo-500 via-purple-400 to-pink-500 text-white"
-              >
-                Mon-Blogs
+              <span>
+              <img src={Logo} alt="Logo"  className="px-2 py-1 
+      bg-gradient-to-r from-indigo-500 via-purple-400 to-pink-500 text-white w-10 h-10 rounded-full"/>
               </span>
-              Blog
+           
             </Link>
           </div>
           <div
