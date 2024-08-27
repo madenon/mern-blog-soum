@@ -109,7 +109,7 @@ const navigate=useNavigate()
         navigate(`/post/${data.slug}`)
       }
     } catch (error) {
-      setPublishError("Quelque s'est mal passé lors de lq publicqtion")
+      setPublishError("Quelque s'est mal passé lors de la publication")
       
     }
   }
