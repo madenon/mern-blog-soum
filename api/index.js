@@ -9,7 +9,6 @@ import authRoute from "./routes/auth.route.js"
 import postRoutes from "./routes/post.route.js"
 import commentRoutes from "./routes/comment.route.js"
 import path from "path"
-import exp from "constants";
 const PORT=process.env.PORT || 3000
 mongoose.connect(process.env.MONGO).then(()=>{
     console.log("Connexion à la base de donnée")
